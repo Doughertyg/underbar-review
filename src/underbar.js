@@ -7,6 +7,7 @@
   // seem very useful, but remember it--if a function needs to provide an
   // iterator when the user does not pass one in, this will be handy.
   _.identity = function(val) {
+    return val;
   };
 
   /**
@@ -37,6 +38,10 @@
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
+    if (n === 0) {
+      return [];
+    }
+    return n === undefined ? array[array.length - 1] : array.slice(-n); 
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -45,6 +50,35 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
+    /*
+
+    first check collection type: object or array?
+
+    if array: iterate using for loop
+    if iterator exists, apply to each element in array
+
+    if object: iterate over object using for in loop
+    call iterator on each value obj[key]
+
+
+    */
+
+    if (Array.isArray(collection)) {
+
+      for (var i = 0; i < collection.length; i++) {
+        var ele = collection[i];
+
+        iterator(ele, i, collection);
+      }
+    }
+
+    if (!Array.isArray(collection)) {
+
+      for (var key in collection) {
+
+        iterator(collection[key], key, collection);
+      }
+    }
   };
 
   // Returns the index at which value can be found in the array, or -1 if value
@@ -66,12 +100,35 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
+    /*
+    test to check if input is an array
+    iterate over collection
+      use test on each element
+        if true then push to result array
+
+    return result array
+    */
+
+    var resultArr = [];
+
+    if (Array.isArray(collection)) {
+      for (var i = 0; i < collection.length; i++) {
+        var ele = collection[i];
+        if (test(ele)) {
+          resultArr.push(ele);
+        }
+      }
+      return resultArr;
+    }
   };
 
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
+    var resultArr = _.filter(collection, test);
+    return resultArr;
+    
   };
 
   // Produce a duplicate-free version of the array.
